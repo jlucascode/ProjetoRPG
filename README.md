@@ -25,14 +25,22 @@ O código-fonte está estruturado de forma modular para garantir a legibilidade 
 ProjetoRPG/
 │
 ├── src/main/java/com/mycompany/projetorpg/
-│   ├── JogoMain.java             # Classe principal de inicialização
-│   ├── TelaMenuPrincipal.java    # Interface gráfica do menu inicial
-│   ├── TelaBatalha.java          # Interface gráfica de combate por turnos
-│   ├── TelaInventario.java       # Interface gráfica de gerenciamento de itens
-│   ├── Heroi.java                # Modelo de dados do personagem do jogador
-│   ├── Inimigo.java              # Modelo de dados dos oponentes
-│   └── Item.java                 # Modelo de dados para poções e equipamentos
+│   ├── ProjetoRPG.java               # Classe principal de inicialização
+│   ├── TelaMenuPrincipal.java        # Interface gráfica do menu inicial
+│   ├── TelaBatalha.java              # Interface gráfica de combate por turnos
+│   ├── TelaInventario.java           # Interface gráfica de gerenciamento de itens
+│   ├── Personagem.java               # Classe abstrata base de Heroi e Inimigo
+│   ├── Heroi.java                    # Personagem do jogador (tem um Inventario)
+│   ├── Inimigo.java                  # Oponentes sorteados nas batalhas
+│   ├── Item.java                     # Classe abstrata base de Pocao e Arma
+│   ├── Pocao.java                    # Item de cura
+│   ├── Arma.java                     # Item que aumenta o ataque
+│   ├── Inventario.java               # Lista de itens do herói
+│   ├── Batalha.java                  # Lógica dos turnos de combate
+│   ├── Arquivo.java                  # Salvar e carregar o jogo (save.txt)
+│   └── InventarioCheioException.java # Exceção do inventário cheio
 │
+├── pom.xml
 └── README.md
 
 
@@ -40,9 +48,9 @@ Principais Componentes:
 
 TelaMenuPrincipal: Ponto de entrada visual onde o jogador interage com as opções iniciais de navegação.
 
-TelaBatalha: Gerencia a interface visual do combate, exibindo barras de vida dinâmicas e o painel de log de ações (Atacar, Usar Item, Fugir).
+TelaBatalha: Gerencia a interface visual do combate, exibindo a vida do herói e do inimigo e o painel de log de ações (Atacar, Usar Item, Fugir).
 
-TelaInventario: Exibe os itens disponíveis ao jogador através de componentes de lista customizados.
+TelaInventario: Exibe os itens disponíveis ao jogador em uma lista, permitindo usar poções e equipar armas.
 
 Classes de Modelo (Heroi, Inimigo, Item): Contêm os atributos encapsulados e os métodos operacionais específicos de cada entidade do jogo.
 
