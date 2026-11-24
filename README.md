@@ -1,96 +1,42 @@
-ProjetoRPG - Sistema de Batalha e Exploração em Java Swing
+# ProjetoRPG
 
-📖 Sobre o Projeto
+Jogo de RPG com batalhas por turnos e interface gráfica em Java Swing. O jogador controla um herói, enfrenta inimigos sorteados e usa itens do inventário para recuperar vida ou aumentar o ataque.
 
-O ProjetoRPG é um jogo de interpretação de papéis (RPG) baseado em turnos desenvolvido em Java, utilizando o paradigma de Orientação a Objetos (POO) e uma interface gráfica moderna construída com Java Swing.
+Projeto final da disciplina de Programação Orientada a Objetos (2026.2) da Universidade Federal do Ceará (UFC), Campus Russas.
 
-O sistema foi concebido como o Projeto Final da disciplina de Programação Orientada a Objetos (2026.2), aplicando conceitos fundamentais de modelagem de software, encapsulamento, herança, polimorfismo e modularização gráfica através de telas interativas no ambiente Apache NetBeans.
+## Como jogar
 
-🎯 Objetivos Acadêmicos
+- **Batalha** — escolha entre atacar, usar um item ou fugir. A tela exibe a vida dos personagens e o histórico do combate.
+- **Inventário** — use poções para recuperar vida e equipe armas para aumentar o ataque. O inventário comporta até seis itens.
+- **Progresso** — ao derrotar inimigos, o herói pode receber itens como recompensa. O jogo usa o arquivo local `save.txt` para salvar e carregar o progresso.
 
-Este projeto tem como finalidade prática consolidar os pilares da POO estudados em sala de aula:
+## Como executar no NetBeans
 
-Abstração e Modelagem: Mapeamento de entidades do mundo real e do universo de jogos em classes coesas.
+1. Instale o Apache NetBeans e um JDK compatível, como o JDK 17 ou 21. O Maven está configurado para compilar com alvo Java 17.
+2. Clone o repositório.
 
-Encapsulamento: Proteção do estado interno dos objetos através de modificadores de acesso e métodos de acesso controlados.
+   ```bash
+   git clone https://github.com/jlucascode/ProjetoRPG.git
+   ```
 
-Reuso de Código: Aplicação de herança entre classes de personagens e itens.
+3. No NetBeans, abra **File → Open Project** e selecione a pasta `ProjetoRPG`, que contém o `pom.xml`.
+4. Clique com o botão direito em **ProjetoRPG** e escolha **Run**. Se a IDE pedir a classe principal, selecione `com.mycompany.projetorpg.ProjetoRPG`. Ela abre o menu principal do jogo.
 
-Separação de Interesses: Organização modular entre as classes de modelo (dados), classes de controle e a interface gráfica baseada em componentes Swing (JFrame e JPanel).
+## Estrutura do código
 
-🏛️ Arquitetura e Estrutura do Projeto
+As classes Java ficam em `src/main/java/com/mycompany/projetorpg`.
 
-O código-fonte está estruturado de forma modular para garantir a legibilidade e a manutenibilidade:
+| Classes | Responsabilidade |
+| --- | --- |
+| `ProjetoRPG` | Ponto de entrada da aplicação. |
+| `TelaMenuPrincipal`, `TelaBatalha` e `TelaInventario` | Telas Swing para navegação, combate e uso de itens. |
+| `Personagem`, `Heroi` e `Inimigo` | Estado dos personagens e cálculo de dano. `Heroi` e `Inimigo` herdam de `Personagem` e implementam seu próprio cálculo. |
+| `Batalha` | Processamento das ações por turno e registro do histórico do combate. |
+| `Item`, `Pocao` e `Arma` | Uso polimórfico de itens para cura ou bônus de ataque. |
+| `Inventario` e `InventarioCheioException` | Armazenamento dos itens em um `ArrayList` e controle do limite de capacidade. |
+| `Arquivo` | Gravação e leitura do progresso em arquivo texto. |
 
-ProjetoRPG/
-│
-├── src/main/java/com/mycompany/projetorpg/
-│   ├── ProjetoRPG.java               # Classe principal de inicialização
-│   ├── TelaMenuPrincipal.java        # Interface gráfica do menu inicial
-│   ├── TelaBatalha.java              # Interface gráfica de combate por turnos
-│   ├── TelaInventario.java           # Interface gráfica de gerenciamento de itens
-│   ├── Personagem.java               # Classe abstrata base de Heroi e Inimigo
-│   ├── Heroi.java                    # Personagem do jogador (tem um Inventario)
-│   ├── Inimigo.java                  # Oponentes sorteados nas batalhas
-│   ├── Item.java                     # Classe abstrata base de Pocao e Arma
-│   ├── Pocao.java                    # Item de cura
-│   ├── Arma.java                     # Item que aumenta o ataque
-│   ├── Inventario.java               # Lista de itens do herói
-│   ├── Batalha.java                  # Lógica dos turnos de combate
-│   ├── Arquivo.java                  # Salvar e carregar o jogo (save.txt)
-│   └── InventarioCheioException.java # Exceção do inventário cheio
-│
-├── pom.xml
-└── README.md
+## Integrantes
 
-
-Principais Componentes:
-
-TelaMenuPrincipal: Ponto de entrada visual onde o jogador interage com as opções iniciais de navegação.
-
-TelaBatalha: Gerencia a interface visual do combate, exibindo a vida do herói e do inimigo e o painel de log de ações (Atacar, Usar Item, Fugir).
-
-TelaInventario: Exibe os itens disponíveis ao jogador em uma lista, permitindo usar poções e equipar armas.
-
-Classes de Modelo (Heroi, Inimigo, Item): Contêm os atributos encapsulados e os métodos operacionais específicos de cada entidade do jogo.
-
-🛠️ Tecnologias e Ferramentas Utilizadas
-
-Linguagem: Java (JDK 17+)
-
-Ambiente de Desenvolvimento (IDE): Apache NetBeans 25+
-
-Biblioteca Gráfica: Java Swing / AWT (Componentes JFrame, JPanel, JButton, JLabel, JList, JTextArea)
-
-Controle de Versão: Git & GitHub
-
-🚀 Como Executar o Projeto
-
-Para executar o projeto localmente em sua máquina, siga os passos abaixo:
-
-Pré-requisitos: Certifique-se de ter o JDK (Java Development Kit) e o Apache NetBeans instalados.
-
-Clonar o Repositório:
-
-git clone https://github.com/jlucascode/ProjetoRPG.git
-
-
-Abrir no NetBeans:
-
-Abra o Apache NetBeans.
-
-Vá em File > Open Project e selecione a pasta do repositório ProjetoRPG.
-
-Executar:
-
-No painel esquerdo do NetBeans, expanda o projeto.
-
-Clique com o botão direito na classe principal ou na TelaMenuPrincipal e selecione Run File (ou pressione Shift + F6).
-
-👥 Autoria e Créditos
-
-Desenvolvido com dedicação para a disciplina de Programação Orientada a Objetos:
-
-Desenvolvedor Principal: João Lucas Miranda
-
-Instituição: Universidade Federal do Ceará (UFC) - Campus Russas
+- João Lucas
+- José Ernesto
