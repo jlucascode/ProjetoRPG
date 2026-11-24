@@ -4,17 +4,46 @@
  */
 package com.mycompany.projetorpg;
 
+import javax.swing.DefaultListModel;
+import javax.swing.JOptionPane;
+
 /**
  *
  * @author jluca
  */
 public class TelaInventario extends javax.swing.JFrame {
 
+    private Heroi heroi;
+    private TelaMenuPrincipal menu;
+
     /**
      * Creates new form TelaInventario
      */
-    public TelaInventario() {
+    public TelaInventario(Heroi heroi, TelaMenuPrincipal menu) {
         initComponents();
+        this.heroi = heroi;
+        this.menu = menu;
+        setLocationRelativeTo(null);
+        carregarLista();
+    }
+
+    private void carregarLista() {
+        DefaultListModel<String> modelo = new DefaultListModel<>();
+        for (Item item : heroi.getInventario().getItens()) {
+            String texto = item.toString();
+            if (item == heroi.getArmaEquipada()) {
+                texto += " [equipada]";
+            }
+            modelo.addElement(texto);
+        }
+        listaItens.setModel(modelo);
+        Titulo.setText("Inventário de " + heroi.getNome() + " (" + heroi.getInventario().getQuantidade()
+                + "/" + Inventario.CAPACIDADE_MAXIMA + ") - " + heroi.getVida() + "/" + heroi.getVidaMaxima() + "HP");
+    }
+
+    private void voltarMenu() {
+        menu.setVisible(true);
+        dispose();
     }
 
     /**
@@ -33,7 +62,12 @@ public class TelaInventario extends javax.swing.JFrame {
         btnVoltarMenu = new javax.swing.JButton();
         btnItemSelecionado = new javax.swing.JButton();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowClosing(java.awt.event.WindowEvent evt) {
+                formWindowClosing(evt);
+            }
+        });
 
         listaItens.setModel(new javax.swing.AbstractListModel<String>() {
             String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
@@ -112,47 +146,24 @@ public class TelaInventario extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnVoltarMenuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnVoltarMenuActionPerformed
-        // TODO add your handling code here:
+        voltarMenu();
     }//GEN-LAST:event_btnVoltarMenuActionPerformed
 
     private void btnItemSelecionadoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnItemSelecionadoActionPerformed
-        // TODO add your handling code here:
+        int indice = listaItens.getSelectedIndex();
+        if (indice == -1) {
+            JOptionPane.showMessageDialog(this, "Selecione um item da lista.");
+            return;
+        }
+
+        Item item = heroi.getInventario().getItem(indice);
+        JOptionPane.showMessageDialog(this, item.usar(heroi));
+        carregarLista();
     }//GEN-LAST:event_btnItemSelecionadoActionPerformed
 
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(TelaInventario.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(TelaInventario.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(TelaInventario.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(TelaInventario.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        }
-        //</editor-fold>
-
-        /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new TelaInventario().setVisible(true);
-            }
-        });
-    }
+    private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
+        voltarMenu();
+    }//GEN-LAST:event_formWindowClosing
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel Titulo;

@@ -4,17 +4,51 @@
  */
 package com.mycompany.projetorpg;
 
+import java.util.ArrayList;
+import javax.swing.JOptionPane;
+
 /**
  *
  * @author jluca
  */
 public class TelaBatalha extends javax.swing.JFrame {
 
+    private Heroi heroi;
+    private TelaMenuPrincipal menu;
+    private Batalha batalha;
+
     /**
      * Creates new form TelaBatalha
      */
-    public TelaBatalha() {
+    public TelaBatalha(Heroi heroi, TelaMenuPrincipal menu) {
         initComponents();
+        this.heroi = heroi;
+        this.menu = menu;
+        batalha = new Batalha(heroi, Inimigo.sortear());
+
+        setTitle("Batalha - " + heroi.getNome() + " vs " + batalha.getInimigo().getNome());
+        jTextArea1.setEditable(false);
+        setLocationRelativeTo(null);
+        atualizarTela();
+    }
+
+    private void atualizarTela() {
+        lblVidaHeroi.setText(heroi.toString());
+        lblVidaInimigo.setText(batalha.getInimigo().toString());
+        jTextArea1.setText(String.join("\n", batalha.getHistorico()));
+
+        if (batalha.isTerminada()) {
+            btnAtacar.setEnabled(false);
+            btnUsarItem.setEnabled(false);
+            btnFugir.setEnabled(false);
+            JOptionPane.showMessageDialog(this, "Batalha encerrada!\n" + batalha.getUltimaMensagem());
+            voltarMenu();
+        }
+    }
+
+    private void voltarMenu() {
+        menu.setVisible(true);
+        dispose();
     }
 
     /**
@@ -35,7 +69,12 @@ public class TelaBatalha extends javax.swing.JFrame {
         btnAtacar = new javax.swing.JButton();
         btnFugir = new javax.swing.JButton();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowClosing(java.awt.event.WindowEvent evt) {
+                formWindowClosing(evt);
+            }
+        });
 
         lblVidaHeroi.setText("Herói: 100/100HP");
 
@@ -127,51 +166,36 @@ public class TelaBatalha extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnAtacarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAtacarActionPerformed
-        // TODO add your handling code here:
+        batalha.atacar();
+        atualizarTela();
     }//GEN-LAST:event_btnAtacarActionPerformed
 
     private void btnUsarItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUsarItemActionPerformed
-        // TODO add your handling code here:
+        ArrayList<Item> itens = heroi.getInventario().getItens();
+        if (itens.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Seu inventário está vazio!");
+            return;
+        }
+
+        Item escolhido = (Item) JOptionPane.showInputDialog(this, "Escolha um item:", "Usar Item",
+                JOptionPane.QUESTION_MESSAGE, null, itens.toArray(), itens.get(0));
+        if (escolhido != null) {
+            batalha.usarItem(escolhido);
+            atualizarTela();
+        }
     }//GEN-LAST:event_btnUsarItemActionPerformed
 
     private void btnFugirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnFugirActionPerformed
-        // TODO add your handling code here:
+        batalha.fugir();
+        atualizarTela();
     }//GEN-LAST:event_btnFugirActionPerformed
 
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(TelaBatalha.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(TelaBatalha.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(TelaBatalha.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(TelaBatalha.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+    private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
+        int opcao = JOptionPane.showConfirmDialog(this, "Sair da batalha e voltar ao menu?", "Sair", JOptionPane.YES_NO_OPTION);
+        if (opcao == JOptionPane.YES_OPTION) {
+            voltarMenu();
         }
-        //</editor-fold>
-
-        /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new TelaBatalha().setVisible(true);
-            }
-        });
-    }
+    }//GEN-LAST:event_formWindowClosing
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAtacar;

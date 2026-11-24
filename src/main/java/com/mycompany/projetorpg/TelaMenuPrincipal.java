@@ -4,17 +4,58 @@
  */
 package com.mycompany.projetorpg;
 
+import java.io.IOException;
+import javax.swing.JOptionPane;
+
 /**
  *
  * @author jluca
  */
 public class TelaMenuPrincipal extends javax.swing.JFrame {
 
+    private Heroi heroi;
+
     /**
      * Creates new form Painel
      */
     public TelaMenuPrincipal() {
         initComponents();
+        setLocationRelativeTo(null);
+        carregarHeroi();
+    }
+
+    private void carregarHeroi() {
+        if (Arquivo.existeSave()) {
+            int opcao = JOptionPane.showConfirmDialog(this, "Existe um jogo salvo. Deseja continuar?", "Carregar jogo", JOptionPane.YES_NO_OPTION);
+            if (opcao == JOptionPane.YES_OPTION) {
+                try {
+                    heroi = Arquivo.carregar();
+                    setTitle("ProjetoRPG - " + heroi.getNome());
+                    return;
+                } catch (Exception e) {
+                    JOptionPane.showMessageDialog(this, "Não foi possível carregar o jogo salvo. Um novo jogo será criado.");
+                }
+            }
+        }
+        novoHeroi();
+    }
+
+    private void novoHeroi() {
+        String nome = JOptionPane.showInputDialog(this, "Digite o nome do seu herói:");
+        if (nome == null || nome.isBlank()) {
+            nome = "Herói";
+        }
+        heroi = new Heroi(nome.trim());
+        Inimigo.setDerrotados(0);
+
+        try {
+            heroi.getInventario().adicionar(new Pocao("Poção Pequena", 20));
+            heroi.getInventario().adicionar(new Pocao("Poção Pequena", 20));
+            heroi.getInventario().adicionar(new Arma("Adaga", 2));
+        } catch (InventarioCheioException e) {
+            System.out.println(e.getMessage());
+        }
+        setTitle("ProjetoRPG - " + heroi.getNome());
     }
 
     /**
@@ -58,6 +99,11 @@ public class TelaMenuPrincipal extends javax.swing.JFrame {
         jLabelMenu.setToolTipText("");
 
         btnSair.setText("Sair");
+        btnSair.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnSairActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanelMenuLayout = new javax.swing.GroupLayout(jPanelMenu);
         jPanelMenu.setLayout(jPanelMenuLayout);
@@ -111,12 +157,24 @@ public class TelaMenuPrincipal extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnIniciarBatalhaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnIniciarBatalhaActionPerformed
-        // TODO add your handling code here:
+        new TelaBatalha(heroi, this).setVisible(true);
+        setVisible(false);
     }//GEN-LAST:event_btnIniciarBatalhaActionPerformed
 
     private void btnVerInventarioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnVerInventarioActionPerformed
-         // TODO add your handling code here:
+        new TelaInventario(heroi, this).setVisible(true);
+        setVisible(false);
     }//GEN-LAST:event_btnVerInventarioActionPerformed
+
+    private void btnSairActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSairActionPerformed
+        try {
+            Arquivo.salvar(heroi);
+            JOptionPane.showMessageDialog(this, "Jogo salvo! Inimigos derrotados: " + Inimigo.getDerrotados());
+        } catch (IOException e) {
+            JOptionPane.showMessageDialog(this, "Erro ao salvar o jogo: " + e.getMessage());
+        }
+        System.exit(0);
+    }//GEN-LAST:event_btnSairActionPerformed
 
     /**
      * @param args the command line arguments
